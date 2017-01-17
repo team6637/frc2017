@@ -1,9 +1,17 @@
 package org.usfirst.frc.team6637.robot;
 
+// Robot Requirements
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
+import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+
+// Motor Drive Dependencies
+import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.SampleRobot;
+import edu.wpi.first.wpilibj.Timer;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -12,9 +20,15 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
  * creating this project, you must also update the manifest file in the resource
  * directory.
  */
+
+// CORE OF ROBOT – Robot
 public class Robot extends IterativeRobot {
-	RobotDrive myRobot;
-	Joystick stick;
+	
+	// Initialized Variables
+	public RobotDrive myRobot;
+	private SpeedController motor;	// the motor to directly control with a joystick
+    private Joystick stick;
+    private final double k_updatePeriod = 0.005; // update every 0.005 seconds/5 milliseconds (200Hz)
 	int autoLoopCounter;
 	
 	// More Commands
@@ -34,12 +48,47 @@ public class Robot extends IterativeRobot {
     }
     
     /**
-     * This function is run once each time the robot enters autonomous mode
+     * START: Robot Drive Mechanisms
+     * 
+     * ––––––––––––––––––––––
+     */
+    
+    public Robot() {
+        motor = new Talon(0);		// initialize the motor as a Talon on channel 0
+        stick = new Joystick(0);	// initialize the joystick on port 0
+    }
+
+    /**
+     * Runs the motor from a joystick.
+     */
+    public void operatorControl() {
+        while (isOperatorControl() && isEnabled()) {
+        	// Set the motor's output.
+        	// This takes a number from -1 (100% speed in reverse) to +1 (100% speed going forward)
+        	motor.set(stick.getY());
+        	
+            Timer.delay(k_updatePeriod);	// wait 5ms to the next update
+        }
+        
+    }
+    
+    /**
+     * END: Robot Drive Mechanisms
+     * 
+     * ––––––––––––––––––––––
+     */
+    
+    
+    
+    /**
+     * Autonomous Functionality
      */
     public void autonomousInit() {
     	autoLoopCounter = 0;
     }
 
+    
+    
     /**
      * This function is called periodically during autonomous
      */
