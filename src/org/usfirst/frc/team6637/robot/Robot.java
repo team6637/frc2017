@@ -50,7 +50,7 @@ public class Robot extends IterativeRobot {
     /**
      * START: Robot Drive Mechanisms
      * 
-     * ––––––––––––––––––––––
+     * -----------------------------
      */
     
     public Robot() {
@@ -75,7 +75,7 @@ public class Robot extends IterativeRobot {
     /**
      * END: Robot Drive Mechanisms
      * 
-     * ––––––––––––––––––––––
+     * ---------------------------
      */
     
     
