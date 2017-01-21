@@ -25,16 +25,16 @@ import edu.wpi.first.wpilibj.Timer;
 public class Robot extends IterativeRobot {
 	
 	// Initialized Variables
-	public RobotDrive myRobot;
+	public RobotDrive myRobot = new RobotDrive(1, 2);
 	private SpeedController motor;	// the motor to directly control with a joystick
-    private Joystick stick;
+    private Joystick driveStick;
     private final double k_updatePeriod = 0.005; // update every 0.005 seconds/5 milliseconds (200Hz)
 	int autoLoopCounter;
 	
 	// More Commands
 	RobotDrive chassis = new RobotDrive(1, 2);
-	Joystick left = new Joystick(1);
-	Joystick right = new Joystick(2);
+	Joystick leftStick = new Joystick(1);
+	Joystick rightStick = new Joystick(2);
 	Joystick control = new Joystick(3);
 	
 	
@@ -44,7 +44,7 @@ public class Robot extends IterativeRobot {
      */
     public void robotInit() {
     	myRobot = new RobotDrive(0,1);
-    	stick = new Joystick(0);
+    	driveStick = new Joystick(0);
     }
     
     /**
@@ -55,7 +55,7 @@ public class Robot extends IterativeRobot {
     
     public Robot() {
         motor = new Talon(0);		// initialize the motor as a Talon on channel 0
-        stick = new Joystick(0);	// initialize the joystick on port 0
+        driveStick = new Joystick(0);	// initialize the joystick on port 0
     }
 
     /**
@@ -65,7 +65,7 @@ public class Robot extends IterativeRobot {
         while (isOperatorControl() && isEnabled()) {
         	// Set the motor's output.
         	// This takes a number from -1 (100% speed in reverse) to +1 (100% speed going forward)
-        	motor.set(stick.getY());
+        	motor.set(driveStick.getY());
         	
             Timer.delay(k_updatePeriod);	// wait 5ms to the next update
         }
@@ -112,7 +112,18 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-        myRobot.arcadeDrive(stick);
+//        myRobot.arcadeDrive(driveStick);
+    	
+    	// Cartesian Driving System
+    	myRobot.mecanumDrive_Cartesian(
+    			driveStick.getAxis(Joystick.AxisType.kX),
+    			driveStick.getAxis(Joystick.AxisType.kY),
+    			0, // Rotation
+    			0 // Gyro
+    		);
+    	
+    	// Tank Drive
+    	myRobot.tankDrive(leftStick, rightStick);
     }
     
     /**
