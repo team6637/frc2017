@@ -112,18 +112,18 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-//        myRobot.arcadeDrive(driveStick);
+        myRobot.arcadeDrive(driveStick);
     	
     	// Cartesian Driving System
-    	myRobot.mecanumDrive_Cartesian(
-    			driveStick.getAxis(Joystick.AxisType.kX),
-    			driveStick.getAxis(Joystick.AxisType.kY),
-    			0, // Rotation
-    			0 // Gyro
-    		);
+//    	myRobot.mecanumDrive_Cartesian(
+//    			driveStick.getAxis(Joystick.AxisType.kX),
+//    			driveStick.getAxis(Joystick.AxisType.kY),
+//    			0, // Rotation
+//    			0 // Gyro
+//    		);
     	
     	// Tank Drive
-    	myRobot.tankDrive(leftStick, rightStick);
+    	//myRobot.tankDrive(leftStick, rightStick);
     }
     
     /**
