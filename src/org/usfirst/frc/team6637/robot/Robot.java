@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.CameraServer;
 
 // Motor Drive Dependencies
 import edu.wpi.first.wpilibj.Talon;
@@ -21,7 +22,7 @@ import edu.wpi.first.wpilibj.Timer;
  * directory.
  */
 
-// CORE OF ROBOT – Robot
+// CORE OF ROBOT - Robot
 public class Robot extends IterativeRobot {
 	
 	// Initialized Variables
@@ -36,6 +37,7 @@ public class Robot extends IterativeRobot {
 	Joystick leftStick = new Joystick(1);
 	Joystick rightStick = new Joystick(2);
 	Joystick control = new Joystick(3);
+	//Joystick controller = new Joystick(RobotMap.JoystickMap.PORT_CONTROLLER);
 	
 	
     /**
@@ -45,6 +47,7 @@ public class Robot extends IterativeRobot {
     public void robotInit() {
     	myRobot = new RobotDrive(0,1);
     	driveStick = new Joystick(0);
+    	CameraServer.getInstance().startAutomaticCapture();
     }
     
     /**
@@ -124,6 +127,8 @@ public class Robot extends IterativeRobot {
     	
     	// Tank Drive
     	//myRobot.tankDrive(leftStick, rightStick);
+    	
+    	
     }
     
     /**
