@@ -4,14 +4,11 @@ package org.usfirst.frc.team6637.robot;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
-import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.CameraServer;
 
-// Motor Drive Dependencies
-import edu.wpi.first.wpilibj.Talon;
-import edu.wpi.first.wpilibj.SampleRobot;
-import edu.wpi.first.wpilibj.Timer;
+
 
 
 /**
@@ -26,18 +23,10 @@ import edu.wpi.first.wpilibj.Timer;
 public class Robot extends IterativeRobot {
 	
 	// Initialized Variables
-	public RobotDrive myRobot = new RobotDrive(1, 2);
-	private SpeedController motor;	// the motor to directly control with a joystick
-    private Joystick driveStick;
-    private final double k_updatePeriod = 0.005; // update every 0.005 seconds/5 milliseconds (200Hz)
+	RobotDrive myRobot;
+	Joystick stick;
 	int autoLoopCounter;
-	
-	// More Commands
-	RobotDrive chassis = new RobotDrive(1, 2);
-	Joystick leftStick = new Joystick(1);
-	Joystick rightStick = new Joystick(2);
-	Joystick control = new Joystick(3);
-	//Joystick controller = new Joystick(RobotMap.JoystickMap.PORT_CONTROLLER);
+	Victor VLeft, VRight;
 	
 	
     /**
@@ -45,43 +34,29 @@ public class Robot extends IterativeRobot {
      * used for any initialization code.
      */
     public void robotInit() {
-    	myRobot = new RobotDrive(0,1);
-    	driveStick = new Joystick(0);
+    	VLeft = new Victor(2);
+    	VRight = new Victor(1);
     	CameraServer.getInstance().startAutomaticCapture();
+    	
+    	myRobot = new RobotDrive(VLeft,VRight);
+    	stick = new Joystick(0);	
     }
-    
-    /**
-     * START: Robot Drive Mechanisms
-     * 
-     * -----------------------------
-     */
-    
-    public Robot() {
-        motor = new Talon(0);		// initialize the motor as a Talon on channel 0
-        driveStick = new Joystick(0);	// initialize the joystick on port 0
-    }
+ 
 
     /**
      * Runs the motor from a joystick.
      */
-    public void operatorControl() {
-        while (isOperatorControl() && isEnabled()) {
-        	// Set the motor's output.
-        	// This takes a number from -1 (100% speed in reverse) to +1 (100% speed going forward)
-        	motor.set(driveStick.getY());
-        	
-            Timer.delay(k_updatePeriod);	// wait 5ms to the next update
-        }
-        
-    }
-    
-    /**
-     * END: Robot Drive Mechanisms
-     * 
-     * ---------------------------
-     */
-    
-    
+//    public void operatorControl() {
+//        while (isOperatorControl() && isEnabled()) {
+//        	// Set the motor's output.
+//        	// This takes a number from -1 (100% speed in reverse) to +1 (100% speed going forward)
+//        	motor.set(driveStick.getY());
+//        	
+//            Timer.delay(k_updatePeriod);	// wait 5ms to the next update
+//        }
+//        
+//    }
+//    
     
     /**
      * Autonomous Functionality
@@ -115,20 +90,8 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-        myRobot.arcadeDrive(driveStick);
-    	
-    	// Cartesian Driving System
-//    	myRobot.mecanumDrive_Cartesian(
-//    			driveStick.getAxis(Joystick.AxisType.kX),
-//    			driveStick.getAxis(Joystick.AxisType.kY),
-//    			0, // Rotation
-//    			0 // Gyro
-//    		);
-    	
-    	// Tank Drive
-    	//myRobot.tankDrive(leftStick, rightStick);
-    	
-    	
+        myRobot.arcadeDrive(stick);
+        //myRobot.mecanumDrive_Cartesian(left., right, null, null);
     }
     
     /**
