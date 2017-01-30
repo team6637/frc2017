@@ -23,8 +23,8 @@ import edu.wpi.first.wpilibj.CameraServer;
 public class Robot extends IterativeRobot {
 	
 	// Initialized Variables
-	RobotDrive myRobot;
-	Joystick stick;
+	RobotDrive chasisDrive;
+	Joystick leftStick;
 	int autoLoopCounter;
 	Victor VLeft, VRight;
 	
@@ -38,8 +38,8 @@ public class Robot extends IterativeRobot {
     	VRight = new Victor(1);
     	CameraServer.getInstance().startAutomaticCapture();
     	
-    	myRobot = new RobotDrive(VLeft,VRight);
-    	stick = new Joystick(0);	
+    	chasisDrive = new RobotDrive(VLeft,VRight);
+    	leftStick = new Joystick(0);	
     }
  
 
@@ -73,10 +73,10 @@ public class Robot extends IterativeRobot {
     public void autonomousPeriodic() {
     	if(autoLoopCounter < 100) //Check if we've completed 100 loops (approximately 2 seconds)
 		{
-			myRobot.drive(-0.5, 0.0); 	// drive forwards half speed
+    		chasisDrive.drive(-0.5, 0.0); 	// drive forwards half speed
 			autoLoopCounter++;
 			} else {
-			myRobot.drive(0.0, 0.0); 	// stop robot
+				chasisDrive.drive(0.0, 0.0); 	// stop robot
 		}
     }
     
@@ -90,7 +90,7 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-        myRobot.arcadeDrive(stick);
+    	chasisDrive.arcadeDrive(leftStick);
         //myRobot.mecanumDrive_Cartesian(left., right, null, null);
     }
     
