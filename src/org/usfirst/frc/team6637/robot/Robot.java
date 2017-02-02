@@ -38,7 +38,7 @@ public class Robot extends IterativeRobot {
 	Victor VLeft, VRight;
 	Victor hopper = new Victor(5);
     Jaguar hopper2 = new Jaguar(6);
-	Compressor gearCompressor = new Compressor();
+	Compressor airCompressor = new Compressor();
 	Solenoid s1;
 	Solenoid s2;
 	float hopperSpeed = 0.5f;
@@ -51,22 +51,26 @@ public class Robot extends IterativeRobot {
     	VLeft = new Victor(2);
     	VRight = new Victor(1);
     	
-    	gearStick = new Joystick(1);             // USB port
-    	gearCompressor = new Compressor(1);  //Digtial I/O,Relay
-    	gearCompressor.start();                        // Start the air compressor
+    	chasisDrive = new RobotDrive(VLeft,VRight);
+    	
+    	// Controller Configuration
+    	leftStick = new Joystick(0);	
+    	gearStick = new Joystick(1);  
+    	//btn1 = new JoystickButton(leftStick, 1);
+    	
+    	// Compressor Configuration
+    	airCompressor = new Compressor(1);  
+    	airCompressor.start();                        
 
-        s1 = new Solenoid(0);                        // Solenoid port
+        s1 = new Solenoid(0);                      
         s2 = new Solenoid(1);
     	
-    	gearCompressor.start();
+        airCompressor.start();
     
     	CameraServer.getInstance().startAutomaticCapture();
     	
     	
-    	chasisDrive = new RobotDrive(VLeft,VRight);
-    	leftStick = new Joystick(0);	
-    	gearStick = new Joystick(1);
-    	btn1 = new JoystickButton(leftStick, 1);
+    	
     }
     
     
@@ -77,18 +81,19 @@ public class Robot extends IterativeRobot {
      */
     public void operatorControl() {
         while (isOperatorControl() && isEnabled()) {
-        	gearCompressor.setClosedLoopControl(true);
-        	gearCompressor.setClosedLoopControl(false);
+        	// Control Air Compressor
+        	airCompressor.setClosedLoopControl(true);
+        	airCompressor.setClosedLoopControl(false);
         	
         	// Set the motor's output.
         	// This takes a number from -1 (100% speed in reverse) to +1 (100% speed going forward)
         	//chasisDrive.set(leftStick.getY());
-        	 if(gearStick.getRawButton(1) == true)
+        	 if(leftStick.getRawButton(1) == true)
              {
                    s1.set(true);
                    s2.set(false);
               }
-              if(gearStick.getRawButton(2) == true)
+              if(leftStick.getRawButton(2) == true)
               {
                    s1.set(false);
                    s2.set(true);
@@ -131,8 +136,9 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-    	chasisDrive.arcadeDrive(leftStick);
+    	// Chasis Drive With Sensitivity 
     	
+    	chasisDrive.arcadeDrive(leftStick, true);
 //    	if(gearStick.getRawButton(1) == true)
 //        {
 //              s1.set(true);
@@ -147,9 +153,9 @@ public class Robot extends IterativeRobot {
     	
         //myRobot.mecanumDrive_Cartesian(left., right, null, null);
     	
-    	if (gearStick.getRawButton(1)) {
+    	if (leftStick.getRawButton(1)) {
             hopper.set(hopperSpeed);
-        } else if (gearStick.getRawButton(2)) {
+        } else if (leftStick.getRawButton(2)) {
             hopper.set(-hopperSpeed);
         } else {
             hopper.set(0.0);
