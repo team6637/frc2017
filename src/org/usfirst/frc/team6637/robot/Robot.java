@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.Victor;
+import edu.wpi.first.wpilibj.buttons.Button;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 
@@ -29,11 +31,13 @@ public class Robot extends IterativeRobot {
 	// Initialized Variables
 	RobotDrive chasisDrive;
 	Joystick leftStick;
+	Joystick gearStick;
+	Button btn1;
+	
 	int autoLoopCounter;
 	Victor VLeft, VRight;
 	Victor hopper = new Victor(5);
     Jaguar hopper2 = new Jaguar(6);
-	Joystick gearStick = new Joystick(1);
 	Compressor gearCompressor = new Compressor();
 	Solenoid s1;
 	Solenoid s2;
@@ -61,6 +65,8 @@ public class Robot extends IterativeRobot {
     	
     	chasisDrive = new RobotDrive(VLeft,VRight);
     	leftStick = new Joystick(0);	
+    	gearStick = new Joystick(1);
+    	btn1 = new JoystickButton(leftStick, 1);
     }
     
     
