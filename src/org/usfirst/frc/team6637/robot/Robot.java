@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 
 
@@ -29,18 +30,21 @@ import edu.wpi.first.wpilibj.Compressor;
 public class Robot extends IterativeRobot {
 	
 	// Initialized Variables
+	// Motor Configuration
 	RobotDrive chasisDrive;
+	// Joystick Configuration
 	Joystick leftStick;
 	Joystick gearStick;
+	// Button Configuration
 	Button btn1;
 	
 	int autoLoopCounter;
+	// Individual Motor Configuration
 	Victor VLeft, VRight;
 	Victor hopper = new Victor(5);
     Jaguar hopper2 = new Jaguar(6);
-	Compressor airCompressor = new Compressor();
-	Solenoid s1;
-	Solenoid s2;
+	Compressor gearCompressor = new Compressor();
+	DoubleSolenoid doubleSolenoid1 = new DoubleSolenoid(1, 2);
 	float hopperSpeed = 0.5f;
 	
     /**
@@ -48,6 +52,7 @@ public class Robot extends IterativeRobot {
      * used for any initialization code.
      */
     public void robotInit() {
+    	// Assign Values to variables
     	VLeft = new Victor(2);
     	VRight = new Victor(1);
     	
@@ -58,19 +63,17 @@ public class Robot extends IterativeRobot {
     	gearStick = new Joystick(1);  
     	//btn1 = new JoystickButton(leftStick, 1);
     	
-    	// Compressor Configuration
-    	airCompressor = new Compressor(1);  
-    	airCompressor.start();                        
+    	// Air Compressor Setup
+    	gearCompressor = new Compressor(1);      
+    	gearCompressor.start();
+    	gearCompressor.setClosedLoopControl(true);
+    	gearCompressor.setClosedLoopControl(false);
 
-        s1 = new Solenoid(0);                      
-        s2 = new Solenoid(1);
-    	
-        airCompressor.start();
+//    	doubleSolenoid1.set(DoubleSolenoid.Value.kOff);
+//    	doubleSolenoid1.set(DoubleSolenoid.Value.kForward);
+//    	doubleSolenoid1.set(DoubleSolenoid.Value.kReverse);
     
     	CameraServer.getInstance().startAutomaticCapture();
-    	
-    	
-    	
     }
     
     
@@ -81,22 +84,17 @@ public class Robot extends IterativeRobot {
      */
     public void operatorControl() {
         while (isOperatorControl() && isEnabled()) {
-        	// Control Air Compressor
-        	airCompressor.setClosedLoopControl(true);
-        	airCompressor.setClosedLoopControl(false);
-        	
-        	// Set the motor's output.
-        	// This takes a number from -1 (100% speed in reverse) to +1 (100% speed going forward)
-        	//chasisDrive.set(leftStick.getY());
+       
         	 if(leftStick.getRawButton(1) == true)
              {
-                   s1.set(true);
-                   s2.set(false);
+        		 
+//                   doubleSolenoid1.set(true);
+//                   doubleSolenoid1.set(false);
               }
               if(leftStick.getRawButton(2) == true)
               {
-                   s1.set(false);
-                   s2.set(true);
+//            	  doubleSolenoid1.set(false);
+//            	  doubleSolenoid1.set(true);
                }
             //Timer.delay(1);	// wait 5ms to the next update
         }
@@ -153,9 +151,9 @@ public class Robot extends IterativeRobot {
     	
         //myRobot.mecanumDrive_Cartesian(left., right, null, null);
     	
-    	if (leftStick.getRawButton(1)) {
+    	if (gearStick.getRawButton(1)) {
             hopper.set(hopperSpeed);
-        } else if (leftStick.getRawButton(2)) {
+        } else if (gearStick.getRawButton(2)) {
             hopper.set(-hopperSpeed);
         } else {
             hopper.set(0.0);
