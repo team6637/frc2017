@@ -44,7 +44,11 @@ public class Robot extends IterativeRobot {
 	Victor hopper = new Victor(5);
     Jaguar hopper2 = new Jaguar(6);
 	Compressor gearCompressor = new Compressor();
-	DoubleSolenoid doubleSolenoid1 = new DoubleSolenoid(1, 2);
+	DoubleSolenoid doubleSolenoid1 = new DoubleSolenoid(0, 1);
+	
+	DoubleSolenoid basketSolenoid1 = new DoubleSolenoid(2, 3);
+	DoubleSolenoid basketSolenoid2 = new DoubleSolenoid(4, 5);
+	
 	float hopperSpeed = 0.5f;
 	
     /**
@@ -60,7 +64,7 @@ public class Robot extends IterativeRobot {
     	
     	// Controller Configuration
     	leftStick = new Joystick(0);	
-    	gearStick = new Joystick(1);  
+    	//gearStick = new Joystick(1);  
     	//btn1 = new JoystickButton(leftStick, 1);
     	
     	// Air Compressor Setup
@@ -72,6 +76,8 @@ public class Robot extends IterativeRobot {
 //    	doubleSolenoid1.set(DoubleSolenoid.Value.kOff);
 //    	doubleSolenoid1.set(DoubleSolenoid.Value.kForward);
 //    	doubleSolenoid1.set(DoubleSolenoid.Value.kReverse);
+    	
+    	
     
     	CameraServer.getInstance().startAutomaticCapture();
     }
@@ -85,17 +91,26 @@ public class Robot extends IterativeRobot {
     public void operatorControl() {
         while (isOperatorControl() && isEnabled()) {
        
-        	 if(leftStick.getRawButton(1) == true)
-             {
+        	
+        		System.out.println("5 is bigger than 4!");
+        		
+        	
+        	 if(leftStick.getRawButton(2) == true) {
         		 
-//                   doubleSolenoid1.set(true);
-//                   doubleSolenoid1.set(false);
+        		 doubleSolenoid1.set(DoubleSolenoid.Value.kForward);
+        		 System.out.println("'A' button is pressed: Piston moves forward");
+        
+              } else if (leftStick.getRawButton(2)) {
+            	  
+            	  doubleSolenoid1.set(DoubleSolenoid.Value.kReverse);
+            	  System.out.println("'B' button is pressed: Piston moves forward");
+            	  
+              } else {
+            	  
+            	  doubleSolenoid1.set(DoubleSolenoid.Value.kOff);
+              
               }
-              if(leftStick.getRawButton(2) == true)
-              {
-//            	  doubleSolenoid1.set(false);
-//            	  doubleSolenoid1.set(true);
-               }
+              
             //Timer.delay(1);	// wait 5ms to the next update
         }
         
@@ -134,30 +149,54 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-    	// Chasis Drive With Sensitivity 
-    	
-    	chasisDrive.arcadeDrive(leftStick, true);
-//    	if(gearStick.getRawButton(1) == true)
-//        {
-//              s1.set(true);
-//              s2.set(false);
-//         }
-//         if(gearStick.getRawButton(2) == true)
-//         {
-//              s1.set(false);
-//              s2.set(true);
-//          }
+    	// Drive the robot with left stick and controlled acceleration
+    	chasisDrive.arcadeDrive(leftStick.getY(), (-leftStick.getX()));
     	
     	
-        //myRobot.mecanumDrive_Cartesian(left., right, null, null);
-    	
-    	if (gearStick.getRawButton(1)) {
-            hopper.set(hopperSpeed);
-        } else if (gearStick.getRawButton(2)) {
-            hopper.set(-hopperSpeed);
+    	// PNEUMATICS
+    	//
+    	// Gear Double Solenoid Control
+    	if (leftStick.getRawButton(1)) {
+    		doubleSolenoid1.set(DoubleSolenoid.Value.kForward);
+    		System.out.println("'A' button is pressed: Piston moves forward");
+        } else if (leftStick.getRawButton(2)) {
+        	doubleSolenoid1.set(DoubleSolenoid.Value.kReverse);
+        	System.out.println("'B' button is pressed: Piston moves forward");
         } else {
-            hopper.set(0.0);
+            doubleSolenoid1.set(DoubleSolenoid.Value.kOff);
         }
+    	
+    	//
+    	// Basket Double Solenoid Control 
+    	
+    	if (leftStick.getRawButton(3)) {
+    		basketSolenoid1.set(DoubleSolenoid.Value.kForward);
+    		basketSolenoid2.set(DoubleSolenoid.Value.kForward);
+    		System.out.println("'X' button is pressed: Piston moves forward");
+        } else if (leftStick.getRawButton(4)) {
+        	basketSolenoid1.set(DoubleSolenoid.Value.kReverse);
+        	basketSolenoid2.set(DoubleSolenoid.Value.kReverse);
+        	System.out.println("'Y' button is pressed: Piston moves forward");
+        } else {
+            basketSolenoid1.set(DoubleSolenoid.Value.kOff);
+            basketSolenoid2.set(DoubleSolenoid.Value.kOff);
+        }
+    	
+//   	 if(leftStick.getRawButton(2) == true) {
+//   		 
+//   		 doubleSolenoid1.set(DoubleSolenoid.Value.kForward);
+//   		 System.out.println("'A' button is pressed: Piston moves forward");
+//   
+//         } else if (leftStick.getRawButton(2)) {
+//       	  
+//       	  doubleSolenoid1.set(DoubleSolenoid.Value.kReverse);
+//       	  System.out.println("'B' button is pressed: Piston moves forward");
+//       	  
+//         } else {
+//       	  
+//       	  doubleSolenoid1.set(DoubleSolenoid.Value.kOff);
+//         
+//         }
     }
     
     /**
