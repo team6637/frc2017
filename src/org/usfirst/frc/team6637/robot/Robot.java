@@ -33,10 +33,9 @@ public class Robot extends IterativeRobot {
 	// Motor Configuration
 	RobotDrive chasisDrive;
 	// Joystick Configuration
-	Joystick leftStick;
-	Joystick gearStick;
+	Joystick leftStick, gearStick;
 	// Button Configuration
-	Button btn1;
+	Button btn1, winchSlow, winchFast;
 	
 	int autoLoopCounter;
 	// Individual Motor Configuration
@@ -45,7 +44,8 @@ public class Robot extends IterativeRobot {
     Jaguar hopper2 = new Jaguar(6);
 	Compressor gearCompressor = new Compressor();
 	DoubleSolenoid doubleSolenoid1 = new DoubleSolenoid(0, 1);
-	
+	Victor winchMotor; 
+	RobotDrive winchDrive; 
 	DoubleSolenoid basketSolenoid1 = new DoubleSolenoid(2, 3);
 	DoubleSolenoid basketSolenoid2 = new DoubleSolenoid(4, 5);
 	
@@ -59,9 +59,10 @@ public class Robot extends IterativeRobot {
     	// Assign Values to variables
     	VLeft = new Victor(2);
     	VRight = new Victor(1);
-    	
+    	winchMotor = new Victor(3);
+//    	winchSlow = new JoystickButton(leftStick, )
     	chasisDrive = new RobotDrive(VLeft,VRight);
-    	
+    
     	// Controller Configuration
     	leftStick = new Joystick(0);	
     	//gearStick = new Joystick(1);  
@@ -171,16 +172,29 @@ public class Robot extends IterativeRobot {
     	
     	if (leftStick.getRawButton(3)) {
     		basketSolenoid1.set(DoubleSolenoid.Value.kForward);
-    		basketSolenoid2.set(DoubleSolenoid.Value.kForward);
+//    		basketSolenoid2.set(DoubleSolenoid.Value.kForward);
     		System.out.println("'X' button is pressed: Piston moves forward");
         } else if (leftStick.getRawButton(4)) {
         	basketSolenoid1.set(DoubleSolenoid.Value.kReverse);
-        	basketSolenoid2.set(DoubleSolenoid.Value.kReverse);
+//        	basketSolenoid2.set(DoubleSolenoid.Value.kReverse);
         	System.out.println("'Y' button is pressed: Piston moves forward");
         } else {
             basketSolenoid1.set(DoubleSolenoid.Value.kOff);
-            basketSolenoid2.set(DoubleSolenoid.Value.kOff);
+//            basketSolenoid2.set(DoubleSolenoid.Value.kOff);
         }
+    	
+    	
+    	
+    	if (leftStick.getRawButton(5)) {
+    		winchMotor.set(0.5);
+    		System.out.println("'LB' button is pressed: Piston moves forward");
+        } else if (leftStick.getRawButton(6)) {
+        	winchMotor.set(1);
+        	System.out.println("'RB' button is pressed: Piston moves forward");
+        } else {
+           winchMotor.set(0);
+        }
+    	
     	
 //   	 if(leftStick.getRawButton(2) == true) {
 //   		 
