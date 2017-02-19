@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.Victor;
@@ -44,7 +45,7 @@ public class Robot extends IterativeRobot {
     Jaguar hopper2 = new Jaguar(6);
 	Compressor gearCompressor = new Compressor();
 	DoubleSolenoid doubleSolenoid1 = new DoubleSolenoid(0, 1);
-	Victor winchMotor; 
+	Spark winchMotor; 
 	RobotDrive winchDrive; 
 	DoubleSolenoid basketSolenoid1 = new DoubleSolenoid(2, 3);
 	DoubleSolenoid basketSolenoid2 = new DoubleSolenoid(4, 5);
@@ -59,28 +60,29 @@ public class Robot extends IterativeRobot {
     	// Assign Values to variables
     	VLeft = new Victor(2);
     	VRight = new Victor(1);
-    	winchMotor = new Victor(3);
-//    	winchSlow = new JoystickButton(leftStick, )
+    	winchMotor = new Spark(4);
     	chasisDrive = new RobotDrive(VLeft,VRight);
     
     	// Controller Configuration
     	leftStick = new Joystick(0);	
-    	//gearStick = new Joystick(1);  
-    	//btn1 = new JoystickButton(leftStick, 1);
+
     	
     	// Air Compressor Setup
     	gearCompressor = new Compressor(1);      
     	gearCompressor.start();
     	gearCompressor.setClosedLoopControl(true);
-    	gearCompressor.setClosedLoopControl(false);
+//    	gearCompressor.setClosedLoopControl(false);
+    	
+    	basketSolenoid1.set(DoubleSolenoid.Value.kReverse);
+    	
+    	basketSolenoid1.set(DoubleSolenoid.Value.kOff);
 
-//    	doubleSolenoid1.set(DoubleSolenoid.Value.kOff);
-//    	doubleSolenoid1.set(DoubleSolenoid.Value.kForward);
-//    	doubleSolenoid1.set(DoubleSolenoid.Value.kReverse);
+
     	
     	
     
     	CameraServer.getInstance().startAutomaticCapture();
+//    	CameraServer.getInstance().getVideo()
     }
     
     
@@ -91,26 +93,10 @@ public class Robot extends IterativeRobot {
      */
     public void operatorControl() {
         while (isOperatorControl() && isEnabled()) {
-       
-        	
-        		System.out.println("5 is bigger than 4!");
+      
         		
         	
-        	 if(leftStick.getRawButton(2) == true) {
-        		 
-        		 doubleSolenoid1.set(DoubleSolenoid.Value.kForward);
-        		 System.out.println("'A' button is pressed: Piston moves forward");
-        
-              } else if (leftStick.getRawButton(2)) {
-            	  
-            	  doubleSolenoid1.set(DoubleSolenoid.Value.kReverse);
-            	  System.out.println("'B' button is pressed: Piston moves forward");
-            	  
-              } else {
-            	  
-            	  doubleSolenoid1.set(DoubleSolenoid.Value.kOff);
-              
-              }
+        	 
               
             //Timer.delay(1);	// wait 5ms to the next update
         }
@@ -131,7 +117,7 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during autonomous
      */
     public void autonomousPeriodic() {
-    	if(autoLoopCounter < 100) //Check if we've completed 100 loops (approximately 2 seconds)
+    	if(autoLoopCounter < 400) //Check if we've completed 100 loops (approximately 2 seconds)
 		{
     		chasisDrive.drive(-0.5, 0.0); 	// drive forwards half speed
 			autoLoopCounter++;
@@ -150,67 +136,50 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-    	// Drive the robot with left stick and controlled acceleration
+    	// DRIVING
+    	// ----------------------------
+    	// Chassis Drive
     	chasisDrive.arcadeDrive(leftStick.getY(), (-leftStick.getX()));
     	
     	
     	// PNEUMATICS
-    	//
-    	// Gear Double Solenoid Control
-    	if (leftStick.getRawButton(1)) {
+    	// ----------------------------
+    	// -> Gear Double Solenoid Control
+    	if (leftStick.getRawButton(2)) {
     		doubleSolenoid1.set(DoubleSolenoid.Value.kForward);
     		System.out.println("'A' button is pressed: Piston moves forward");
-        } else if (leftStick.getRawButton(2)) {
+        } else if (leftStick.getRawButton(1)) {
         	doubleSolenoid1.set(DoubleSolenoid.Value.kReverse);
         	System.out.println("'B' button is pressed: Piston moves forward");
         } else {
             doubleSolenoid1.set(DoubleSolenoid.Value.kOff);
         }
-    	
-    	//
-    	// Basket Double Solenoid Control 
-    	
+    
+    	// -> Basket Solenoid
     	if (leftStick.getRawButton(3)) {
     		basketSolenoid1.set(DoubleSolenoid.Value.kForward);
-//    		basketSolenoid2.set(DoubleSolenoid.Value.kForward);
     		System.out.println("'X' button is pressed: Piston moves forward");
         } else if (leftStick.getRawButton(4)) {
         	basketSolenoid1.set(DoubleSolenoid.Value.kReverse);
-//        	basketSolenoid2.set(DoubleSolenoid.Value.kReverse);
         	System.out.println("'Y' button is pressed: Piston moves forward");
         } else {
             basketSolenoid1.set(DoubleSolenoid.Value.kOff);
-//            basketSolenoid2.set(DoubleSolenoid.Value.kOff);
         }
     	
-    	
-    	
+    	// Winch
     	if (leftStick.getRawButton(5)) {
     		winchMotor.set(0.5);
     		System.out.println("'LB' button is pressed: Piston moves forward");
         } else if (leftStick.getRawButton(6)) {
         	winchMotor.set(1);
         	System.out.println("'RB' button is pressed: Piston moves forward");
+        } else if (leftStick.getRawButton(12)) {
+        	winchMotor.set(-0.5);
+        	System.out.println("'RB' button is pressed: Piston moves forward");
         } else {
            winchMotor.set(0);
         }
     	
-    	
-//   	 if(leftStick.getRawButton(2) == true) {
-//   		 
-//   		 doubleSolenoid1.set(DoubleSolenoid.Value.kForward);
-//   		 System.out.println("'A' button is pressed: Piston moves forward");
-//   
-//         } else if (leftStick.getRawButton(2)) {
-//       	  
-//       	  doubleSolenoid1.set(DoubleSolenoid.Value.kReverse);
-//       	  System.out.println("'B' button is pressed: Piston moves forward");
-//       	  
-//         } else {
-//       	  
-//       	  doubleSolenoid1.set(DoubleSolenoid.Value.kOff);
-//         
-//         }
     }
     
     /**
