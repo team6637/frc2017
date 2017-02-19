@@ -29,17 +29,13 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 // CORE OF ROBOT - Robot
 public class Robot extends IterativeRobot {
-	
+
 	// Initialized Variables
-	// Motor Configuration
+	// ----------------------
 	RobotDrive chasisDrive;
-	// Joystick Configuration
 	Joystick leftStick, gearStick;
-	// Button Configuration
 	Button btn1, winchSlow, winchFast;
-	
 	int autoLoopCounter;
-	// Individual Motor Configuration
 	Victor VLeft, VRight;
 	Victor hopper = new Victor(5);
     Jaguar hopper2 = new Jaguar(6);
@@ -48,41 +44,44 @@ public class Robot extends IterativeRobot {
 	Spark winchMotor; 
 	RobotDrive winchDrive; 
 	DoubleSolenoid basketSolenoid1 = new DoubleSolenoid(2, 3);
-	DoubleSolenoid basketSolenoid2 = new DoubleSolenoid(4, 5);
-	
 	float hopperSpeed = 0.5f;
+	
+	
+    // -------------------------------------------------------
+	
 	
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
+     * 
      */
     public void robotInit() {
-    	// Assign Values to variables
+    	// Initializing Variables from Above
+    	// ---------------------------------
+    	// Drive - Assign Ports
     	VLeft = new Victor(2);
     	VRight = new Victor(1);
     	winchMotor = new Spark(4);
     	chasisDrive = new RobotDrive(VLeft,VRight);
-    
-    	// Controller Configuration
+    	
+    	// Controller - Set Joystick & Controller
     	leftStick = new Joystick(0);	
 
-    	
-    	// Air Compressor Setup
+    	// Pneumatics
+    	// ---------------------------------
+    	// Air Compressor
     	gearCompressor = new Compressor(1);      
     	gearCompressor.start();
     	gearCompressor.setClosedLoopControl(true);
 //    	gearCompressor.setClosedLoopControl(false);
     	
+    	// Solenoids
     	basketSolenoid1.set(DoubleSolenoid.Value.kReverse);
-    	
-    	basketSolenoid1.set(DoubleSolenoid.Value.kOff);
+    	doubleSolenoid1.set(DoubleSolenoid.Value.kReverse);
 
-
-    	
-    	
-    
+    	// Camera
+    	// ---------------------------------
     	CameraServer.getInstance().startAutomaticCapture();
-//    	CameraServer.getInstance().getVideo()
     }
     
     
@@ -93,10 +92,7 @@ public class Robot extends IterativeRobot {
      */
     public void operatorControl() {
         while (isOperatorControl() && isEnabled()) {
-      
-        		
-        	
-        	 
+
               
             //Timer.delay(1);	// wait 5ms to the next update
         }
@@ -173,10 +169,12 @@ public class Robot extends IterativeRobot {
         } else if (leftStick.getRawButton(6)) {
         	winchMotor.set(1);
         	System.out.println("'RB' button is pressed: Piston moves forward");
-        } else if (leftStick.getRawButton(12)) {
+        } 
+        else if (leftStick.getPOV() != -1) {
         	winchMotor.set(-0.5);
         	System.out.println("'RB' button is pressed: Piston moves forward");
-        } else {
+        } 
+        else {
            winchMotor.set(0);
         }
     	
